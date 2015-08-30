@@ -37,11 +37,7 @@ module Tsar.Scene.Party
 					var p = this.getEmitPosition2(dt);
 					var d = this.getEmitDirection();
 
-					var partycle = new Partycle(p, d);
-					partycle.velocity = d.nmul(gMath.random() * 5 + 5);
-					partycle.born = et;
-
-					partycles.push(partycle);
+					partycles.push({p:p, d:d});
 				}
 
 				return partycles;

@@ -1,21 +1,33 @@
 /// <reference path="../../Render/Shaded.ts" />
 /// <reference path="Emitter.ts" />
 /// <reference path="Solver.ts" />
+/// <reference path="Partycle.ts" />
 
 module Tsar.Scene.Party
 {
-	export class System extends Tsar.Render.Shaded
+	export class System<PT extends Tsar.Scene.Party.Partycle> extends Tsar.Render.Shaded
 	{
-		public partycles : Tsar.Scene.Party.Partycle[] = [];
+		public partycles : PT[] = [];
 		public emitter : Tsar.Scene.Party.Emitter;
 		public solver : Tsar.Scene.Party.Solver;
+		public pctor : {new(): PT;};
 
-		constructor(emitter : Tsar.Scene.Party.Emitter, solver : Tsar.Scene.Party.Solver)
+		constructor(
+			emitter: Tsar.Scene.Party.Emitter,
+			solver: Tsar.Scene.Party.Solver,
+			pctor
+		)
 		{
 			super();
 
 			this.emitter = emitter;
 			this.solver = solver;
+			this.pctor = pctor;
+		}
+
+		makePartycle()
+		{
+			return new this.pctor();
 		}
 
 		update(dt:number, et:number, now:number) : any
@@ -40,26 +52,6 @@ module Tsar.Scene.Party
 			}
 
 			this.solve(dt, et, now);
-			this.emit(dt, et, now);
-		}
-
-		emit(dt:number, et:number, now:number)
-		{
-			if (this.partycles.length < 5000)
-			{
-				var partycles = [];
-
-				if (partycles = this.emitter.emit(dt, et, now))
-				{
-					for (var pI=0; pI<partycles.length; pI++)
-					{
-						var p = partycles[pI];
-						this.partycles.push(p);
-						p.lifetime = 10000;
-						p.born = et;						
-					}
-				}
-			}
 		}
 
 		solve(dt:number, et:number, now:number)
