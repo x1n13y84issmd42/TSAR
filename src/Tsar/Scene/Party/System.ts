@@ -8,29 +8,31 @@ import float2 = Tsar.Math.float2;
 
 module Tsar.Scene.Party
 {
-	export class System<PT extends Tsar.Scene.Party.Partycle> extends Tsar.Render.Shaded
+	export class System
+		<PT extends Tsar.Scene.Party.Partycle>
+		extends Tsar.Render.Shaded
 	{
 		public partycles : PT[] = [];
 		public emitter : Tsar.Scene.Party.Emitter;
 		public solver : Tsar.Scene.Party.Solver;
-		public Partycle : {new(p:float2, v:float2): PT;};
+	//	public Partycle : {new(p:float2, v:float2): PT;};
 
 		constructor(
 			emitter: Tsar.Scene.Party.Emitter,
 			solver: Tsar.Scene.Party.Solver,
-			pctor: {new(p:float2, v:float2): PT;}
+			public Partycle 	//	It's a constructor for the particles managed by this system.
+								//	Let actual type of it be inferred right when a derived class
+								//	calls super() with any random particle constructor as an argument.
 		)
 		{
 			super();
 
 			this.emitter = emitter;
 			this.solver = solver;
-			this.Partycle = pctor;
 		}
 
 		update(dt:number, et:number, now:number) : any
 		{
-		//	return;
 			var deadSlice = 0;
 
 			for (var pI = 0; pI < this.partycles.length; pI++)
