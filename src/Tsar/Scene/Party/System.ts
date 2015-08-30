@@ -2,6 +2,9 @@
 /// <reference path="Emitter.ts" />
 /// <reference path="Solver.ts" />
 /// <reference path="Partycle.ts" />
+/// <reference path="../../Math/float2.ts" />
+
+import float2 = Tsar.Math.float2;
 
 module Tsar.Scene.Party
 {
@@ -10,24 +13,19 @@ module Tsar.Scene.Party
 		public partycles : PT[] = [];
 		public emitter : Tsar.Scene.Party.Emitter;
 		public solver : Tsar.Scene.Party.Solver;
-		public pctor : {new(): PT;};
+		public Partycle : {new(p:float2, v:float2): PT;};
 
 		constructor(
 			emitter: Tsar.Scene.Party.Emitter,
 			solver: Tsar.Scene.Party.Solver,
-			pctor
+			pctor: {new(p:float2, v:float2): PT;}
 		)
 		{
 			super();
 
 			this.emitter = emitter;
 			this.solver = solver;
-			this.pctor = pctor;
-		}
-
-		makePartycle()
-		{
-			return new this.pctor();
+			this.Partycle = pctor;
 		}
 
 		update(dt:number, et:number, now:number) : any

@@ -16,9 +16,7 @@ module Tsar.Scene.Party
 					{
 						var sp = partycles[pI];
 
-						var p = this.makePartycle();
-						p.position = sp.p;
-						p.velocity = sp.d.nmul(gMath.random() * 5 + 5);
+						var p = new this.Partycle(sp.p, sp.d.nmul(gMath.random() * 5 + 5));
 						p.lifetime = 10000;
 						p.born = et;						
 						
