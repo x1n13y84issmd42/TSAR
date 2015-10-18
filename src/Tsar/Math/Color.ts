@@ -115,14 +115,24 @@ module Tsar.Math
 			
 			if (h < 1)
 			{
-				h += gMath.floor(h);
+				h -= gMath.ceil(h);
 				h = 1 + h;
 			}
 			if (h > 1)
 			{
 				h -= gMath.floor(h);
 			}
+
 			this.setHSL(h, hsl[1], hsl[2]);
+		}
+
+		set l(l:number)
+		{
+			var hsl = this.toHSL();
+			
+			l = gMath.max(0, gMath.min(1, l));
+			
+			this.setHSL(hsl[0], hsl[1], l);
 		}
 	}
 }
