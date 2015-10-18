@@ -10,7 +10,7 @@ module Tsar.Scene.Party
 			{
 				var partycles = [];
 
-				if (partycles = this.emitter.emit(dt, et, now))
+				if (partycles = this.emitter.update(dt, et, now))
 				{
 					for (var pI=0; pI<partycles.length; pI++)
 					{

@@ -8,6 +8,11 @@ module Tsar.Scene.Party
 		private emittanceRate : number = 10;			//	Partycles per second
 		private emittanceVector : Tsar.Math.float2;	//	Direction to emit particles
 		protected emittanceDelayAccumulator : number = 0;
+
+		public emit(): any
+		{
+
+		}
 		
 		public constructor()
 		{
@@ -15,7 +20,7 @@ module Tsar.Scene.Party
 			this.emittanceVector = new Tsar.Math.float2(0, 0);
 		}
 
-		public emit(dt:number, et:number, now:number) : any
+		public update(dt:number, et:number, now:number) : any
 		{
 		}
 

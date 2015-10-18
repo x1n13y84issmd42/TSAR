@@ -22,7 +22,7 @@ module Tsar.Scene.Party
 			this.emitPosition = new Tsar.Math.float2(0, 0);
 		}
 
-		public emit(dt:number, et:number, now:number) : any
+		public update(dt:number, et:number, now:number) : any
 		{
 			var count = this.shouldEmit(dt);
 
@@ -34,10 +34,7 @@ module Tsar.Scene.Party
 				
 				for (var pI=0; pI<count; pI++)
 				{
-					var p = this.getEmitPosition2(dt);
-					var d = this.getEmitDirection();
-
-					partycles.push({p:p, d:d});
+					partycles.push(this.emit());
 				}
 
 				return partycles;
@@ -46,7 +43,15 @@ module Tsar.Scene.Party
 			return false;
 		}
 
-		private getEmitPosition2(dt : number)
+		public emit()
+		{
+			var p = this.getEmitPosition2();
+			var d = this.getEmitDirection();
+
+			return {p:p, d:d};
+		}
+
+		private getEmitPosition2()
 		{
 			var p = new Tsar.Math.float2(
 				gMath.random() * this.dimensions.x,
