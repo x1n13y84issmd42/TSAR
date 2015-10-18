@@ -1,3 +1,5 @@
+/// <reference path="../Math/float2.ts" />
+
 var gMath = Math;
 
 module Tsar.Render
