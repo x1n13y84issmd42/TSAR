@@ -68,5 +68,10 @@ module Tsar.Math
 				Math.lerp(this.y, v2.y, v)
 			);
 		}
+
+		toString()
+		{
+			return "(" + this. x + ", " + this.y + ")";
+		}
 	}
 }
