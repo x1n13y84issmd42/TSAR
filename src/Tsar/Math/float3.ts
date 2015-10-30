@@ -1,4 +1,5 @@
 /// <reference path="Main.ts" />
+/// <reference path="float2.ts" />
 
 var gMath = Math;
 
@@ -9,6 +10,21 @@ module Tsar.Math
 		public x:number;
 		public y:number;
 		public z:number;
+
+		get xy(): Tsar.Math.float2
+		{
+			return new Tsar.Math.float2(this.x, this.y);
+		}
+
+		get yz(): Tsar.Math.float2
+		{
+			return new Tsar.Math.float2(this.y, this.z);
+		}
+
+		get xz(): Tsar.Math.float2
+		{
+			return new Tsar.Math.float2(this.x, this.z);
+		}
 
 		constructor(x:number, y:number, z:number)
 		{
