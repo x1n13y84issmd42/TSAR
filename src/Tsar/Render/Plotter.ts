@@ -8,10 +8,15 @@ module Tsar.Render.Debug
 		public values: number[] = [];
 		private capacity: number = 0;
 		public maximum: number = 0;
+		public options = {
+			color: 'white',
+			thickness: 1
+		};
 
-		public constructor(capacity: number)
+		public constructor(capacity: number, options:{color:string, thickness:number})
 		{
 			this.capacity = capacity;
+			this.options = options;
 		}
 
 		public addValue(n: number)
@@ -32,20 +37,38 @@ module Tsar.Render.Debug
 	{
 		private charts: Plot[] = [];
 		private capacity: number = 0;
+		private position = new Tsar.Math.float2(0, 0);
+		private dimensions = new Tsar.Math.float2(100, 100);
 
 		public constructor(capacity:number)
 		{
 			this.capacity = capacity;
 		}
 
+		public setPosition(p:Tsar.Math.float2)
+		{
+			this.position = p;
+		}
+
+		public setDimensions(d:Tsar.Math.float2)
+		{
+			this.dimensions = d;
+		}
+
+		public addChart(name: string, options: {color:string, thickness:number})
+		{
+			if (! this.charts[name])
+			{
+				this.charts[name] = new Plot(this.capacity, options);
+			}
+		}
+
 		public addValue(plotName:string, n:number)
 		{
-			if (! this.charts[plotName])
+			if (this.charts[plotName])
 			{
-				this.charts[plotName] = new Plot(this.capacity);
+				this.charts[plotName].addValue(n);
 			}
-
-			this.charts[plotName].addValue(n);
 		}
 
 		public render(C)
@@ -54,8 +77,8 @@ module Tsar.Render.Debug
 			C.lineWidth = 1;
 			C.lineCap = 'round';
 		//	var maximum = gMath.max.apply(null, underscore.pluck(this.charts, 'maximum'));
-			var origin = new Tsar.Math.float2(20, 20);
-			var dimensions = new Tsar.Math.float2(400, 200);
+			var origin = this.position;
+			var dimensions = this.dimensions;
 			var offset = new Tsar.Math.float2(20, -20);
 		//	var YLabels = this.computeYLabels(maximum);
 
@@ -81,7 +104,8 @@ module Tsar.Render.Debug
 			if (plot.values.length)
 			{
 				C.font = "bold 10px Arial";
-				C.strokeStyle = "blue";
+				C.strokeStyle = plot.options.color;
+				C.lineWidth = plot.options.thickness;
 				C.fillStyle = "white";
 				C.beginPath();
 				
