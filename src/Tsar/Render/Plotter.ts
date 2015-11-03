@@ -75,20 +75,35 @@ module Tsar.Render.Debug
 			var x = xOrigin;
 
 			var yfn = (v) => {
-				return (v / plot.maximum) * (dimensions.y + offset.y) + origin.y;
+				return (dimensions.y + offset.y) + origin.y - ((v / plot.maximum) * (dimensions.y + offset.y));
 			};
 
 			if (plot.values.length)
 			{
+				C.font = "bold 10px Arial";
 				C.strokeStyle = "blue";
+				C.fillStyle = "white";
 				C.beginPath();
 				
 				C.moveTo(x, yfn(plot.values[0]));
 
 				for (var vI in plot.values)
 				{
-					C.lineTo(x, yfn(plot.values[vI]));
+					var v = plot.values[vI];
+					var y = yfn(v);
+					C.lineTo(x, y);
 					x += xStep;
+
+					if (v == plot.maximum)
+					{
+						C.context.fillText(v.toFixed(3), x, y);
+						/*
+						C.beginPath();
+						C.arc(x, y, 2, 0, gMath.PI * 2);
+						C.closePath();
+						C.fill();
+						*/
+					}
 				}
 				
 				C.stroke();
