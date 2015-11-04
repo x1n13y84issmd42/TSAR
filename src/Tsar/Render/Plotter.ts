@@ -1,26 +1,64 @@
 /// <reference path="../../../../typings/underscore/underscore.d.ts" />
 /// <reference path="../Math/float2.ts" />
+/// <reference path="../AFX/Main.ts" />
 
 module Tsar.Render.Debug
 {
-	class Plot
+	type PlotOptions = {
+		color?:string,
+		dimensions?:Tsar.Math.float2,
+		name?:string,
+		thickness?:number,
+		axesColor?:string
+	};
+
+	var plotOptionsDefault = {
+		color: "yellow",
+		dimensions: new Tsar.Math.float2(100, 100),
+		thickness: 1,
+		axesColor: "red"
+	};
+
+	export enum PlotRangeType
 	{
-		public name: string;
+		Positive,
+		HasNegative,
+	}
+
+	export class Plot
+	{
+		private capacity: number = 0;
 		public values: number[] = [];
+
+		private min:number;
+		private max:number;
+		private rangeType = PlotRangeType.Positive;
 		public maximum: number = 0;
 		public minimum: number = 0;
-		private capacity: number = 0;
 
-		public options = {
+		public position = new Tsar.Math.float2(0, 0);
+
+		public options:PlotOptions = {
 			color: 'white',
 			thickness: 1
 		};
 
-		public constructor(name, capacity: number, options:{color:string, thickness:number})
+		public constructor(capacity: number, max:number, min:number, options:PlotOptions)
 		{
-			this.name = name;
 			this.capacity = capacity;
-			this.options = options;
+			this.options = Tsar.AFX.mix(plotOptionsDefault, options);
+			this.min = jMath.min(min, max);
+			this.max = jMath.max(min, max);
+
+			if (this.min < 0)
+			{
+				this.rangeType = PlotRangeType.HasNegative;
+			}
+		}
+
+		public setPosition(p:Tsar.Math.float2)
+		{
+			this.position = p;
 		}
 
 		public addValue(n: number)
@@ -36,184 +74,70 @@ module Tsar.Render.Debug
 			this.maximum = jMath.max.apply(null, this.values);
 			this.minimum = jMath.min.apply(null, this.values);
 		}
-	}
-
-	export class Plotter
-	{
-		private charts: Plot[] = [];
-		private capacity: number = 0;
-		private position = new Tsar.Math.float2(0, 0);
-		private dimensions = new Tsar.Math.float2(100, 100);
-		private options = {range:[-1, 1]};
-
-		public constructor(capacity:number)
-		{
-			this.capacity = capacity;
-		}
-
-		public setPosition(p:Tsar.Math.float2)
-		{
-			this.position = p;
-		}
-
-		public setDimensions(d:Tsar.Math.float2)
-		{
-			this.dimensions = d;
-		}
-
-		public addChart(name: string, options: {color:string, thickness:number})
-		{
-			for (var cI in this.charts)
-			{
-				if (this.charts[cI].name == name)
-				{
-					return;
-				}
-			}
-				
-			this.charts.push(new Plot(name, this.capacity, options));
-		}
-
-		public addValue(plotName:string, n:number)
-		{
-			for (var cI in this.charts)
-			{
-				if (this.charts[cI].name == name)
-				{
-					this.charts[cI].addValue(n);
-					return;
-				}
-			}
-		}
 
 		public render(C)
 		{
 			C.globalCompositeOperation = "source-over";
 			C.lineWidth = 1;
 			C.lineCap = 'round';
-			var maximum = this.findMaximum();
-			var minimum = this.findMinimum();
-			var origin = this.position;
-			var dimensions = this.dimensions;
-			var offset = new Tsar.Math.float2(20, -20);
-		//	var YLabels = this.computeYLabels(maximum);
 
-			this.renderAxes(C, origin, dimensions, offset, minimum<0);
+			var originY =
+				(this.rangeType == PlotRangeType.HasNegative)
+				?
+				jMath.round(this.options.dimensions.y / 2)
+				:
+				this.options.dimensions.y;
 
-			for (var cI in this.charts)
-			{
-				var plot = this.charts[cI];
-				this.plot(plot, C, origin, dimensions, offset);
-			}
+			this.renderAxes(C, originY);
+			this.plot(C);
 		}
 
-		private findMaximum()
+		private Y(value:number):number
 		{
-			if (this.charts.length)
-			{
-				var maximum = this.charts[0].maximum;				
-
-				for (var cI in this.charts)
-				{
-					maximum = jMath.max(maximum, this.charts[cI].maximum);
-				}
-
-				return maximum;
-			}
-
-			return 0;
+			var p = (value - this.min) / (this.max - this.min);
+			return p * this.options.dimensions.y + this.position.y;
 		}
 
-		private findMinimum()
+		private plot(C)
 		{
-			if (this.charts.length)
+			if (this.values.length)
 			{
-				var minimum = this.charts[0].minimum;				
+				var x = this.position.x;
+				var stepX = this.options.dimensions.x / this.capacity;
+				var y = this.Y(this.values[0]);
 
-				for (var cI in this.charts)
-				{
-					minimum = jMath.min(minimum, this.charts[cI].minimum);
-				}
-
-				return minimum;
-			}
-
-			return 0;
-		}
-
-		private plot(plot, C, origin, dimensions, offset)
-		{
-			var xStep = (dimensions.x - offset.x) / plot.capacity;
-			var xOrigin = origin.x + offset.x;
-			var x = xOrigin;
-
-			var yfn = (v) => {
-				return (dimensions.y + offset.y) + origin.y - ((v / plot.maximum) * (dimensions.y + offset.y));
-			};
-
-			if (plot.values.length)
-			{
-				C.font = "bold 10px Arial";
-				C.strokeStyle = plot.options.color;
-				C.lineWidth = plot.options.thickness;
-				C.fillStyle = "white";
+				C.strokeStyle = this.options.color;
+				C.lineWidth = this.options.thickness;
 				C.beginPath();
-				
-				C.moveTo(x, yfn(plot.values[0]));
+				C.moveTo(x, y);
 
-				for (var vI in plot.values)
+				for (var vI in this.values)
 				{
-					var v = plot.values[vI];
-					var y = yfn(v);
+					y = this.Y(this.values[vI]);
 					C.lineTo(x, y);
-					x += xStep;
-
-					if (v == plot.maximum)
-					{
-						C.context.fillText(v.toFixed(3), x, y);
-						/*
-						C.beginPath();
-						C.arc(x, y, 2, 0, jMath.PI * 2);
-						C.closePath();
-						C.fill();
-						*/
-					}
+					x += stepX;
 				}
-				
+
 				C.stroke();
 				C.closePath();
 			}
 		}
 
-		private renderAxes(C, origin, dimensions, offset, negative)
+		private renderAxes(C, originY)
 		{
-			C.strokeStyle = "red";
-			C.fillStyle = "white";
+			C.strokeStyle = this.options.axesColor;
 			C.beginPath();
 
 			//	Y
-			C.moveTo(origin.x + offset.x, origin.y);
-			C.lineTo(origin.x + offset.x, origin.y + dimensions.y);
+			C.moveTo(this.position.x, this.position.y);
+			C.lineTo(this.position.x, this.position.y + this.options.dimensions.y);
 
 			//	X
-			if (negative)
-			{
-				C.moveTo(origin.x, origin.y + offset.y + dimensions.y / 2);
-				C.lineTo(origin.x + dimensions.x, origin.y + offset.y + dimensions.y / 2);				
-			}
-			else
-			{
-				C.moveTo(origin.x, origin.y + offset.y + dimensions.y);
-				C.lineTo(origin.x + dimensions.x, origin.y + offset.y + dimensions.y);				
-			}
+			C.moveTo(this.position.x, this.position.y + originY);
+			C.lineTo(this.position.x + this.options.dimensions.x, this.position.y + originY);
 
 			C.closePath();
 			C.stroke();
-		}
-
-		private computeYLabels(maximum: number)
-		{
-			return [];
 		}
 	}
 }
