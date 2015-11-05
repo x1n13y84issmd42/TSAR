@@ -14,12 +14,7 @@ module Tsar.Input
 
 		public listen(node)
 		{
-			var input = this;
-
-		//	if (window.DeviceMotionEvent)
-			{
-				node.addEventListener('devicemotion', (evt) => {this.evt_deviceMotion(evt);});
-			}
+			window.addEventListener('devicemotion', (evt) => {this.evt_deviceMotion(evt);});
 		}
 
 		public onMotion(cb:(e:any)=>void):void
