@@ -2,9 +2,9 @@ module Tsar.UI
 {
 	export class Window
 	{
-		wnd;
-		documentElement;
-		body;
+		private wnd;
+		private documentElement;
+		private body;
 		private cbResize:any = null;
 
 		constructor(window, document)
@@ -34,6 +34,11 @@ module Tsar.UI
 		onResize(cb)
 		{
 			this.cbResize = cb;
+		}
+
+		addChild(e:any)
+		{
+			this.body.addChild(e);
 		}
 	}
 
