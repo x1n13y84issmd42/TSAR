@@ -1,6 +1,6 @@
 /// <reference path="Main.ts" />
 
-var gMath = Math;
+var jMath = Math;
 
 module Tsar.Math
 {
@@ -38,7 +38,7 @@ module Tsar.Math
 		dist(v2)
 		{
 			var sub = this.sub(v2);
-			return gMath.sqrt(sub.x * sub.x + sub.y * sub.y);
+			return jMath.sqrt(sub.x * sub.x + sub.y * sub.y);
 		}
 
 		ndiv(v)
@@ -53,7 +53,7 @@ module Tsar.Math
 
 		mag()
 		{
-			return gMath.sqrt(this.dot(this));
+			return jMath.sqrt(this.dot(this));
 		}
 
 		normalize()
