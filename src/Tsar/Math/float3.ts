@@ -38,11 +38,6 @@ module Tsar.Math
 			return this.x * v.x + this.y * v.y + this.z * v.z;
 		}
 
-		cross() : float2
-		{
-			return new float2(this.y, -this.x);
-		}
-
 		add(v2:float3) : float3
 		{
 			return new float3(this.x + v2.x, this.y + v2.y, this.z + v2.z);
@@ -85,6 +80,16 @@ module Tsar.Math
 				Math.lerp(this.x, v2.x, v),
 				Math.lerp(this.y, v2.y, v),
 				Math.lerp(this.z, v2.z, v)
+			);
+		}
+
+		cross(b: Tsar.Math.float3)
+		{
+			var a = this;
+			return new Tsar.Math.float3(
+				a.y * b.z - a.z * b.y,
+				a.z * b.x - a.x * b.z,
+				a.x * b.y - a.y * b.x
 			);
 		}
 	}
