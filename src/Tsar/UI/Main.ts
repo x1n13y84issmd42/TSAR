@@ -9,9 +9,16 @@ module Tsar.UI
 	 * mount something into HTML around. Wouldn't it be a canvas render target?
 	 * @param {Tsar.Render.Target} rt A render target to be layed out in HTML and receive input (mouse/kb/touch) events.
 	 */
-	export function exposeRenderTarget(rt : Tsar.Render.Target)
+	export function exposeRenderTarget(rt : Tsar.Render.Target, hidden = false)
 	{
-		Tsar.DOM.append(rt.getDOMNode());		
+		if (hidden)
+		{
+			Tsar.DOM.shadowAppend(rt.getDOMNode());
+		}
+		else
+		{
+			Tsar.DOM.append(rt.getDOMNode());
+		}
 		
 		return new Tsar.Input.Proxy(rt.getDOMNode());
 	}

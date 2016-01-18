@@ -1,5 +1,7 @@
 /// <reference path="float3.ts" />
 
+var jMath = Math;
+
 module Tsar.Math
 {
 	export function lerp(from, to, t)
@@ -13,5 +15,17 @@ module Tsar.Math
 			(((p.x - width / 2) / (p.z - zNear)) * 0.5 + 0.5) * width,
 			(((p.y - height / 2) / (p.z - zNear)) * 0.5 + 0.5) * height
 		);
+	}
+
+	export function scale2D(x:number, y:number, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number)
+	{
+		var rx = (x - sx) / sw;
+		var ry = (y - sy) / sh;
+		return new float2(dx + dw * rx, dy + dh * ry);
+	}
+
+	export function deg2rad(degree:number)
+	{
+		return degree * (jMath.PI / 180);
 	}
 }

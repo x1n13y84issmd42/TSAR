@@ -21,6 +21,16 @@ module Tsar.Render
 			return this.element;
 		}
 
+		width()
+		{
+			return this.element.width;
+		}
+
+		height()
+		{
+			return this.element.height;
+		}
+
 		resize(w:number, h:number)
 		{
 			this.element.width = w;

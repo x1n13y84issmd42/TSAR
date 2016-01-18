@@ -1,15 +1,26 @@
 module Tsar.DOM
 {
-	var dom;
+	var DOM;
+	var shadowDOM;
 
-	export function root(rootNode)
+	export function root(rootNode, shadowRootNode?:any)
 	{
-		dom = rootNode;
+		DOM = rootNode;
+
+		if (shadowRootNode)
+		{
+			shadowDOM = shadowRootNode;
+		}
 	}
 
 	export function append(node)
 	{
-		dom.appendChild(node);
+		DOM.appendChild(node);
+	}
+
+	export function shadowAppend(node)
+	{
+		shadowDOM.appendChild(node);
 	}
 
 	export function grab(id)
