@@ -1,4 +1,6 @@
-var gMath = Math;
+/// <reference path="Main.ts" />
+
+var jMath = Math;
 
 module Tsar.Math
 {
@@ -39,8 +41,8 @@ module Tsar.Math
 			var g = this.g/255;
 			var b = this.b/255;
 
-			var max = gMath.max(r, g, b);
-			var min = gMath.min(r, g, b);
+			var max = jMath.max(r, g, b);
+			var min = jMath.min(r, g, b);
 
 			var h, s, l = (max + min) / 2;
 
@@ -89,9 +91,9 @@ module Tsar.Math
 		        b = hue2rgb(p, q, h - 1/3);
 		    }
 
-		    this.r = gMath.round(r * 255);
-		    this.g = gMath.round(g * 255);
-		    this.b = gMath.round(b * 255);
+		    this.r = jMath.round(r * 255);
+		    this.g = jMath.round(g * 255);
+		    this.b = jMath.round(b * 255);
 		}
 
 		get h(): number
@@ -115,12 +117,12 @@ module Tsar.Math
 			
 			if (h < 1)
 			{
-				h -= gMath.ceil(h);
+				h -= jMath.ceil(h);
 				h = 1 + h;
 			}
 			if (h > 1)
 			{
-				h -= gMath.floor(h);
+				h -= jMath.floor(h);
 			}
 
 			this.setHSL(h, hsl[1], hsl[2]);
@@ -130,9 +132,26 @@ module Tsar.Math
 		{
 			var hsl = this.toHSL();
 			
-			l = gMath.max(0, gMath.min(1, l));
+			l = jMath.max(0, jMath.min(1, l));
 			
 			this.setHSL(hsl[0], hsl[1], l);
+		}
+
+		set s(s:number)
+		{
+			var hsl = this.toHSL();
+			s = jMath.max(0, jMath.min(1, s));
+			this.setHSL(hsl[0], s, hsl[2]);
+		}
+
+		lerp(c, that:Color):Color
+		{
+			return new Color(
+				lerp(this.r, that.r, c),
+				lerp(this.g, that.g, c),
+				lerp(this.b, that.b, c),
+				lerp(this.a, that.a, c)
+				);
 		}
 	}
 }
