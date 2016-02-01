@@ -16,6 +16,11 @@ module Tsar.Render
 			this.context = new Context(this.element.getContext('2d'));
 		}
 
+		get node()
+		{
+			return this.element;
+		}
+
 		getDOMNode()
 		{
 			return this.element;
