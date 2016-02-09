@@ -28,4 +28,9 @@ module Tsar.Math
 	{
 		return degree * (jMath.PI / 180);
 	}
+
+	export function isPtInCircle(pt:Tsar.Math.float2, center:Tsar.Math.float2, radius:number)
+	{
+		return center.dist(pt) <= radius;
+	}
 }
