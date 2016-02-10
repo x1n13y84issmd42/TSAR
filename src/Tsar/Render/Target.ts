@@ -1,3 +1,4 @@
+/// <reference path="../AFX/Typings.ts" />
 /// <reference path="Context.ts" />
 
 module Tsar.Render

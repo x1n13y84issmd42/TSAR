@@ -23,11 +23,6 @@ module Tsar.Input
 			window.addEventListener('touchcancel', (evt) => {this.evt_touchCancel(evt);});
 		}
 
-		public onMotion(cb:(e:any)=>void):void
-		{
-			this.cb = cb;
-		}
-
 		public evt_touchStart(evt)
 		{
 			if (this.touchStartCB)
@@ -58,6 +53,26 @@ module Tsar.Input
 			{
 				this.touchCancelCB(evt);
 			}
+		}
+
+		public onTouchStart(cb)
+		{
+			this.touchStartCB = cb;
+		}
+
+		public onTouchEnd(cb)
+		{
+			this.touchEndCB = cb;
+		}
+
+		public onTouchCancel(cb)
+		{
+			this.touchCancelCB = cb;
+		}
+
+		public onTouchMove(cb)
+		{
+			this.touchMoveCB = cb;
 		}
 	}
 }
