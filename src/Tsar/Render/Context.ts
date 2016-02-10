@@ -22,7 +22,7 @@ module Tsar.Render
 			this.context.canvas = c;
 		}
 
-		get fillStyle(): string
+		get fillStyle(): string | CanvasGradient | CanvasPattern
 		{
 			return this.context.fillStyle;
 		}
@@ -161,7 +161,7 @@ module Tsar.Render
 			this.context.shadowOffsetY = value;
 		}
 
-		get strokeStyle(): string
+		get strokeStyle(): string | CanvasGradient | CanvasPattern
 		{
 			return this.context.strokeStyle;
 		}
